@@ -150,18 +150,18 @@ def get_star_from_years(light_years, db_cursor):
     return Star(*db_cursor.fetchone())
 
 def main():
-    conn = sqlite3.connect('stars.db')
-    c = conn.cursor()
-    date_str = input("Enter your birthday (mm/dd/yyyy): ")
-    date_object = datetime.datetime.strptime(date_str, "%m/%d/%Y").date()
-    star = get_star_from_years(years_since_date(date_object), c)
-    print("Your current birth star is " + star.get_identifier() + ".")
-    future_tense_modifier = ""
-    if years_since_date(star.when_will_light_hit(date_object)) < 0:
-        # Date is in the future
-        future_tense_modifier = "will "
-    print("The light that left this star when you were born " +
-          future_tense_modifier + "hit the earth on " + str(star.when_will_light_hit(date_object)))
+    with sqlite3.connect('stars.db') as conn:
+        c = conn.cursor()
+        date_str = input("Enter your birthday (mm/dd/yyyy): ")
+        date_object = datetime.datetime.strptime(date_str, "%m/%d/%Y").date()
+        star = get_star_from_years(years_since_date(date_object), c)
+        print("Your current birth star is " + star.get_identifier() + ".")
+        future_tense_modifier = ""
+        if years_since_date(star.when_will_light_hit(date_object)) < 0:
+            # Date is in the future
+            future_tense_modifier = "will "
+        print("The light that left this star when you were born " +
+              future_tense_modifier + "hit the earth on " + str(star.when_will_light_hit(date_object)))
 
 if __name__ == "__main__":
     main()
